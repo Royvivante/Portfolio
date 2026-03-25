@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Roy Vivante — Full-Stack Developer",
+  title: "Roy Vivante | Full-Stack Developer",
   description:
     "Full-stack developer with a strong backend focus. I build production-ready systems, APIs, and polished web experiences. Explore my projects, tech stack, and experience.",
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Roy Vivante" }],
   openGraph: {
-    title: "Roy Vivante — Full-Stack Developer",
+    title: "Roy Vivante | Full-Stack Developer",
     description:
       "Full-stack developer building production-ready systems, APIs, and web experiences.",
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Roy Vivante — Full-Stack Developer",
+    title: "Roy Vivante | Full-Stack Developer",
     description:
       "Full-stack developer building production-ready systems, APIs, and web experiences.",
   },

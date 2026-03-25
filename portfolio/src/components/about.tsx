@@ -19,11 +19,11 @@ export function About() {
           <p>
             I&apos;m a Computer Science student at HIT (Holon Institute of Technology), graduating
             October 2026. I got into software engineering because I like building things that
-            actually work — not just prototypes, but systems that run in production and solve real
+            actually work, not just prototypes, but systems that run in production and solve real
             problems.
           </p>
           <p>
-            My strongest interest is in backend engineering and system design — designing clean APIs,
+            My strongest interest is in backend engineering and system design: designing clean APIs,
             modeling databases, handling auth and permissions correctly, and thinking through the
             architecture before writing code. I also built a strong foundation in object-oriented
             design and clean architecture through structured development in C# and .NET, focusing on
