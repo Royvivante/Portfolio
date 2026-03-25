@@ -62,7 +62,7 @@ const DefaultArticleItems: ArticleItem[] = [
     img: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=200&h=200&fit=crop&q=80',
   },
   {
-    url: '/resume.pdf',
+    url: '/Roy_Vivante_CV_final.pdf',
     title: 'Resume',
     subTitle: 'Download my latest CV',
     img: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&h=200&fit=crop&q=80',

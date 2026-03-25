@@ -92,7 +92,7 @@ export function Hero() {
             <ArrowDown size={16} className="transition-transform group-hover:translate-y-0.5" />
           </a>
           <a
-            href="/resume.pdf"
+            href="/Roy_Vivante_CV_final.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-6 py-3 text-sm font-medium text-muted hover:text-foreground hover:bg-white/[0.06] hover:border-white/[0.15] transition-all duration-200"
