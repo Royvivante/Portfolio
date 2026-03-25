@@ -1,7 +1,9 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, FileText } from "lucide-react";
+import { HeroScene } from "./hero-scene";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -18,10 +20,16 @@ export function Hero() {
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
     >
-      {/* Background gradient */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-accent/[0.07] blur-[120px]" />
+      {/* 3D Particle field background */}
+      <Suspense fallback={null}>
+        <HeroScene />
+      </Suspense>
+
+      {/* Gradient overlay for depth */}
+      <div className="pointer-events-none absolute inset-0 z-[1]">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-accent/[0.05] blur-[120px]" />
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">

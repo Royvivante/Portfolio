@@ -1,8 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { TECH_STACK } from "@/data/portfolio";
 import { SectionHeading } from "./section-heading";
+import { TechOrbit } from "./tech-orbit";
 
 export function TechStack() {
   return (
@@ -13,6 +15,26 @@ export function TechStack() {
         description="The technologies I use to design, build, and deploy production systems."
       />
 
+      {/* 3D Orbit visualization */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.8 }}
+        className="mx-auto max-w-4xl mb-16"
+      >
+        <Suspense
+          fallback={
+            <div className="h-[400px] sm:h-[500px] flex items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+            </div>
+          }
+        >
+          <TechOrbit />
+        </Suspense>
+      </motion.div>
+
+      {/* Grouped badges (fallback/detailed view) */}
       <div className="mx-auto max-w-4xl space-y-8">
         {TECH_STACK.map((group, gi) => (
           <motion.div
