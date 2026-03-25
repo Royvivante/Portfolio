@@ -3,14 +3,7 @@
 import { motion } from "framer-motion";
 import { TECH_STACK } from "@/data/portfolio";
 import { SectionHeading } from "./section-heading";
-
-const reveal = {
-  hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
-  visible: (i: number) => ({
-    opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { duration: 0.5, delay: i * 0.08, ease: [0.25, 0.4, 0.25, 1] as const },
-  }),
-};
+import { MagicStack } from "./magic-stack";
 
 export function TechStack() {
   return (
@@ -20,24 +13,36 @@ export function TechStack() {
         title="Tech Stack"
         description="The technologies I use to design, build, and deploy production systems."
       />
-      <div className="mx-auto max-w-4xl space-y-10">
+
+      {/* Magic wand → orb → skill text animation */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.8 }}
+        className="mx-auto max-w-4xl mb-16"
+      >
+        <MagicStack />
+      </motion.div>
+
+      {/* Grouped badges (detailed view) */}
+      <div className="mx-auto max-w-4xl space-y-8">
         {TECH_STACK.map((group, gi) => (
           <motion.div
             key={group.category}
-            custom={gi}
-            variants={reveal}
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.4, delay: gi * 0.08, ease: [0.25, 0.4, 0.25, 1] }}
           >
-            <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-accent/60">
+            <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted/60">
               {group.category}
             </h3>
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap gap-2">
               {group.items.map((tech) => (
                 <span
                   key={tech}
-                  className="rounded-lg border border-card-border bg-card/60 backdrop-blur-sm px-4 py-2.5 text-sm text-muted/90 hover:text-foreground hover:border-card-border-hover hover:bg-accent/[0.04] transition-all duration-300 cursor-default"
+                  className="rounded-lg border border-card-border bg-card px-3.5 py-2 text-sm text-muted hover:text-foreground hover:border-card-border-hover transition-all duration-200 cursor-default"
                 >
                   {tech}
                 </span>

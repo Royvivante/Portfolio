@@ -9,13 +9,13 @@ export function About() {
       <SectionHeading label="Background" title="About Me" />
 
       <motion.div
-        initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+        transition={{ duration: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
         className="mx-auto max-w-2xl"
       >
-        <div className="rounded-2xl border border-card-border bg-card/80 backdrop-blur-sm p-8 sm:p-10 space-y-4 text-sm sm:text-base text-muted/85 leading-relaxed">
+        <div className="rounded-2xl border border-card-border bg-card p-8 sm:p-10 space-y-4 text-sm sm:text-base text-muted leading-relaxed">
           <p>
             I&apos;m a Computer Science student at HIT (Holon Institute of Technology), graduating
             October 2026. I got into software engineering because I like building things that

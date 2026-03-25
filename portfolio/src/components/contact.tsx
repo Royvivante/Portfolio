@@ -36,41 +36,44 @@ export function Contact() {
   return (
     <section id="contact" className="relative py-24 sm:py-32 px-6">
       <motion.div
-        initial={{ opacity: 0, y: 24, filter: "blur(4px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+        transition={{ duration: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
         className="mx-auto max-w-5xl"
       >
         <div className="text-center mb-14">
-          <span className="mb-3 inline-block font-mono text-xs uppercase tracking-widest text-accent/70">
+          <span className="mb-3 inline-block font-mono text-xs uppercase tracking-widest text-accent">
             Contact
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-4">
             Let&apos;s Connect
           </h2>
-          <p className="text-base text-muted/80 leading-relaxed">
+          <p className="text-base text-muted leading-relaxed">
             Interested in working together or just want to chat? Send me a message
             or find me on the links below.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-start">
+          {/* Left — contact form */}
           <div>
-            <h3 className="text-sm font-medium text-foreground/60 mb-4 font-mono uppercase tracking-wider">
+            <h3 className="text-sm font-medium text-foreground/70 mb-4 font-mono uppercase tracking-wider">
               Send a message
             </h3>
             <ContactForm />
           </div>
 
+          {/* Right — stacked social cards */}
           <div className="hidden md:block">
-            <h3 className="text-sm font-medium text-foreground/60 mb-4 font-mono uppercase tracking-wider">
+            <h3 className="text-sm font-medium text-foreground/70 mb-4 font-mono uppercase tracking-wider">
               Find me
             </h3>
             <StackedArticleCards items={STACKED_ITEMS} />
           </div>
         </div>
 
+        {/* Mobile: show stacked cards below form */}
         <div className="mt-12 md:hidden flex justify-center">
           <StackedArticleCards items={STACKED_ITEMS} />
         </div>
