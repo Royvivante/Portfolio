@@ -10,33 +10,26 @@ const SKILLS = [
 ];
 
 /* ── Timing ── */
-const FIRE_INTERVAL = 550;       // new orb every 550ms
-const TRAVEL_DURATION = 280;     // fast snap
+const FIRE_INTERVAL = 600;
+const TRAVEL_DURATION = 280;
 const BURST_DURATION = 250;
 const FORM_DURATION = 500;
-const HOLD_DURATION = 4500;      // stay visible longer since many co-exist
-const DISSOLVE_DURATION = 1200;
+const HOLD_DURATION = 4200;
+const DISSOLVE_DURATION = 1100;
 
 /* ── Visual ── */
 const ORB_RADIUS = 5;
 const TRAIL_LEN = 10;
 const PARTICLES_PER_SLOT = 80;
-
-/* ── Slot positions (relative 0-1 coordinates) ── */
-const SLOT_POSITIONS = [
-  { x: 0.15, y: 0.22, scale: 0.85 },
-  { x: 0.50, y: 0.15, scale: 0.90 },
-  { x: 0.78, y: 0.20, scale: 0.80 },
-  { x: 0.25, y: 0.50, scale: 1.00 },
-  { x: 0.55, y: 0.48, scale: 1.00 },
-  { x: 0.12, y: 0.78, scale: 0.85 },
-  { x: 0.42, y: 0.80, scale: 0.90 },
-  { x: 0.72, y: 0.75, scale: 0.85 },
-  { x: 0.38, y: 0.35, scale: 0.75 },
-  { x: 0.68, y: 0.50, scale: 0.80 },
-];
+const PADDING = 28;            // min gap between skill labels
+const MAX_PLACEMENT_TRIES = 40;
+const MARGIN_X = 0.06;        // keep away from edges (% of W)
+const MARGIN_Y = 0.08;
+const WAND_ZONE = 0.15;       // keep clear of wand area on the right
 
 type SlotPhase = "travel" | "burst" | "form" | "hold" | "dissolve" | "done";
+
+interface Rect { l: number; t: number; r: number; b: number; }
 
 interface Particle {
   x: number; y: number;
@@ -51,8 +44,9 @@ interface Slot {
   skill: string;
   phase: SlotPhase;
   t0: number;
-  cx: number; cy: number;      // target center
+  cx: number; cy: number;
   fontSize: number;
+  bbox: Rect;
   particles: Particle[];
   trail: TrailPt[];
   orbX: number; orbY: number;
@@ -62,11 +56,30 @@ interface Slot {
 function easeOut2(t: number) { return 1 - (1 - t) ** 2; }
 function easeOut3(t: number) { return 1 - (1 - t) ** 3; }
 
+function rectsOverlap(a: Rect, b: Rect): boolean {
+  return a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
+}
+
+/** Measure text bounding box centered at cx,cy */
+function measureLabel(
+  ctx: CanvasRenderingContext2D, text: string, cx: number, cy: number, fontSize: number
+): Rect {
+  ctx.font = `bold ${fontSize}px "Inter", system-ui, sans-serif`;
+  const m = ctx.measureText(text);
+  const hw = m.width / 2;
+  const hh = fontSize * 0.65;
+  return {
+    l: cx - hw - PADDING,
+    t: cy - hh - PADDING,
+    r: cx + hw + PADDING,
+    b: cy + hh + PADDING,
+  };
+}
+
 /** Sample pixel positions from text at a specific position */
 function sampleTextAt(
   text: string, cx: number, cy: number, fontSize: number, n: number
 ): { x: number; y: number }[] {
-  // Render text centered at origin, then offset to cx,cy
   const pad = 20;
   const w = Math.ceil(fontSize * text.length * 0.7) + pad * 2;
   const h = Math.ceil(fontSize * 1.6) + pad * 2;
@@ -113,14 +126,43 @@ export function MagicStack({ className }: { className?: string }) {
     const W = rect.width;
     const H = rect.height;
 
-    // Wand position (right side, vertically centered)
     const wandBaseX = W * 0.92;
     const wandBaseY = H * 0.45;
 
     let skillIdx = 0;
-    let slotIdx = 0;
     let lastFire = 0;
     const slots: Slot[] = [];
+
+    // Font size range — slight random variation per shot
+    const baseFontMin = Math.max(14, Math.min(22, W * 0.024));
+    const baseFontMax = Math.max(20, Math.min(30, W * 0.038));
+
+    /** Try to find a random position that doesn't collide with active slots */
+    function findRandomPosition(skill: string): { cx: number; cy: number; fontSize: number; bbox: Rect } | null {
+      const fontSize = Math.round(baseFontMin + Math.random() * (baseFontMax - baseFontMin));
+      const minX = W * MARGIN_X;
+      const maxX = W * (1 - MARGIN_X - WAND_ZONE);
+      const minY = H * MARGIN_Y;
+      const maxY = H * (1 - MARGIN_Y);
+
+      for (let attempt = 0; attempt < MAX_PLACEMENT_TRIES; attempt++) {
+        const cx = minX + Math.random() * (maxX - minX);
+        const cy = minY + Math.random() * (maxY - minY);
+        const bbox = measureLabel(ctx, skill, cx, cy, fontSize);
+
+        // Check bbox stays within canvas
+        if (bbox.l < 0 || bbox.t < 0 || bbox.r > W || bbox.b > H) continue;
+
+        // Check no overlap with any active (non-done) slot
+        let collides = false;
+        for (const s of slots) {
+          if (s.phase === "done") continue;
+          if (rectsOverlap(bbox, s.bbox)) { collides = true; break; }
+        }
+        if (!collides) return { cx, cy, fontSize, bbox };
+      }
+      return null; // couldn't find a spot — skip this fire
+    }
 
     /* ── Draw wooden wand ── */
     function drawWand(now: number) {
@@ -132,15 +174,14 @@ export function MagicStack({ className }: { className?: string }) {
       const tipW = 3.5;
       const baseW = 6;
 
-      // Wood body — tapered shape
+      // Wood body — tapered
       ctx.beginPath();
-      ctx.moveTo(-tipW / 2, -wandLen / 2);                // tip left
-      ctx.lineTo(tipW / 2, -wandLen / 2);                  // tip right
-      ctx.lineTo(baseW / 2, wandLen / 2);                  // base right
-      ctx.lineTo(-baseW / 2, wandLen / 2);                 // base left
+      ctx.moveTo(-tipW / 2, -wandLen / 2);
+      ctx.lineTo(tipW / 2, -wandLen / 2);
+      ctx.lineTo(baseW / 2, wandLen / 2);
+      ctx.lineTo(-baseW / 2, wandLen / 2);
       ctx.closePath();
 
-      // Wood gradient — warm browns
       const woodGrad = ctx.createLinearGradient(0, -wandLen / 2, 0, wandLen / 2);
       woodGrad.addColorStop(0, "rgba(160,120,80,0.7)");
       woodGrad.addColorStop(0.15, "rgba(130,90,55,0.75)");
@@ -152,19 +193,19 @@ export function MagicStack({ className }: { className?: string }) {
       ctx.fillStyle = woodGrad;
       ctx.fill();
 
-      // Wood grain lines
+      // Grain lines
       ctx.strokeStyle = "rgba(70,45,25,0.25)";
       ctx.lineWidth = 0.5;
       for (let i = 0; i < 5; i++) {
         const yOff = -wandLen / 2 + (wandLen / 5) * (i + 0.5);
-        const xWiggle = (i % 2 === 0 ? 0.3 : -0.3);
+        const xW = (i % 2 === 0 ? 0.3 : -0.3);
         ctx.beginPath();
-        ctx.moveTo(-tipW / 2 + 0.8 + xWiggle, yOff);
-        ctx.quadraticCurveTo(xWiggle * 2, yOff + wandLen / 10, tipW / 2 - 0.8 + xWiggle, yOff + wandLen / 5);
+        ctx.moveTo(-tipW / 2 + 0.8 + xW, yOff);
+        ctx.quadraticCurveTo(xW * 2, yOff + wandLen / 10, tipW / 2 - 0.8 + xW, yOff + wandLen / 5);
         ctx.stroke();
       }
 
-      // Wood knot
+      // Knot
       ctx.fillStyle = "rgba(65,40,25,0.35)";
       ctx.beginPath();
       ctx.ellipse(0.5, 8, 1.8, 1.2, 0.2, 0, Math.PI * 2);
@@ -178,7 +219,7 @@ export function MagicStack({ className }: { className?: string }) {
       ctx.lineTo(-baseW / 2 - 0.2, wandLen / 2);
       ctx.stroke();
 
-      // Tip glow — pulsing
+      // Tip glow
       const pulse = 0.5 + Math.sin(now * 0.004) * 0.15;
       const tg = ctx.createRadialGradient(0, -wandLen / 2, 0, 0, -wandLen / 2, 14);
       tg.addColorStop(0, `rgba(167,139,250,${0.6 * pulse})`);
@@ -189,7 +230,6 @@ export function MagicStack({ className }: { className?: string }) {
       ctx.arc(0, -wandLen / 2, 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // Bright tip dot
       ctx.fillStyle = `rgba(220,200,255,${0.5 * pulse})`;
       ctx.beginPath();
       ctx.arc(0, -wandLen / 2, 2, 0, Math.PI * 2);
@@ -197,12 +237,11 @@ export function MagicStack({ className }: { className?: string }) {
 
       ctx.restore();
 
-      // Return wand tip position in world space for orb origin
       const angle = -0.4;
       const tipLocalY = -wandLen / 2;
       return {
-        x: wandBaseX + Math.sin(angle) * tipLocalY * -1 + Math.cos(angle) * 0,
-        y: wandBaseY + Math.cos(angle) * tipLocalY + Math.sin(angle) * 0,
+        x: wandBaseX + Math.sin(angle) * tipLocalY * -1,
+        y: wandBaseY + Math.cos(angle) * tipLocalY,
       };
     }
 
@@ -258,7 +297,6 @@ export function MagicStack({ className }: { className?: string }) {
     function drawSlotText(slot: Slot, alpha: number) {
       ctx.save();
       ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
-      // Glow halo
       ctx.shadowColor = "rgba(139,92,246,0.6)";
       ctx.shadowBlur = 24;
       ctx.fillStyle = "rgba(139,92,246,0.01)";
@@ -266,7 +304,6 @@ export function MagicStack({ className }: { className?: string }) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(slot.skill, slot.cx, slot.cy);
-      // Crisp text
       ctx.shadowColor = "rgba(167,139,250,0.4)";
       ctx.shadowBlur = 10;
       ctx.fillStyle = "rgba(237,233,254,0.95)";
@@ -277,13 +314,12 @@ export function MagicStack({ className }: { className?: string }) {
     }
 
     function fireNewOrb(now: number, tipPos: { x: number; y: number }) {
-      const pos = SLOT_POSITIONS[slotIdx % SLOT_POSITIONS.length];
-      const cx = pos.x * W;
-      const cy = pos.y * H;
-      const baseFontSize = Math.max(16, Math.min(28, W * 0.032));
-      const fontSize = Math.round(baseFontSize * pos.scale);
+      const skill = SKILLS[skillIdx];
+      const placement = findRandomPosition(skill);
+      if (!placement) return; // canvas is full — wait for a slot to clear
 
-      const pts = sampleTextAt(SKILLS[skillIdx], cx, cy, fontSize, PARTICLES_PER_SLOT);
+      const { cx, cy, fontSize, bbox } = placement;
+      const pts = sampleTextAt(skill, cx, cy, fontSize, PARTICLES_PER_SLOT);
       const particles: Particle[] = pts.map(p => {
         const a = Math.random() * Math.PI * 2;
         return {
@@ -291,23 +327,21 @@ export function MagicStack({ className }: { className?: string }) {
           tx: p.x, ty: p.y,
           vx: Math.cos(a) * (1 + Math.random() * 2),
           vy: Math.sin(a) * (1 + Math.random() * 2),
-          size: 0.8 + Math.random() * 1, alpha: 1,
+          size: 0.8 + Math.random() * 1,
+          alpha: 1,
           hue: 258 + Math.random() * 35,
         };
       });
 
       slots.push({
-        skill: SKILLS[skillIdx],
-        phase: "travel",
-        t0: now,
-        cx, cy, fontSize, particles,
+        skill, phase: "travel", t0: now,
+        cx, cy, fontSize, bbox, particles,
         trail: [],
         orbX: tipPos.x, orbY: tipPos.y,
         wandTipX: tipPos.x, wandTipY: tipPos.y,
       });
 
       skillIdx = (skillIdx + 1) % SKILLS.length;
-      slotIdx = (slotIdx + 1) % SLOT_POSITIONS.length;
     }
 
     function updateSlot(slot: Slot, now: number) {
@@ -337,7 +371,6 @@ export function MagicStack({ className }: { className?: string }) {
             p.vx *= 0.92;
             p.vy *= 0.92;
           }
-          // Flash
           if (t < 0.35) {
             const fa = (1 - t / 0.35) * 0.15;
             const fg = ctx.createRadialGradient(slot.cx, slot.cy, 0, slot.cx, slot.cy, 40);
@@ -395,21 +428,17 @@ export function MagicStack({ className }: { className?: string }) {
     /* ── Main loop ── */
     function tick(now: number) {
       ctx.clearRect(0, 0, W, H);
-
       const tipPos = drawWand(now);
 
-      // Fire new orbs on interval
       if (now - lastFire > FIRE_INTERVAL) {
         fireNewOrb(now, tipPos);
         lastFire = now;
       }
 
-      // Update all active slots
       for (const slot of slots) {
         if (slot.phase !== "done") updateSlot(slot, now);
       }
 
-      // Cleanup finished slots
       for (let i = slots.length - 1; i >= 0; i--) {
         if (slots[i].phase === "done") slots.splice(i, 1);
       }
@@ -419,20 +448,24 @@ export function MagicStack({ className }: { className?: string }) {
 
     // Reduced motion fallback
     if (prefersReduced.current) {
-      const baseFontSize = Math.max(16, Math.min(28, W * 0.032));
-      SLOT_POSITIONS.forEach((pos, i) => {
-        if (i >= SKILLS.length) return;
-        const fs = Math.round(baseFontSize * pos.scale);
+      const fs = Math.round((baseFontMin + baseFontMax) / 2);
+      const cols = 3;
+      const rows = Math.ceil(SKILLS.length / cols);
+      SKILLS.forEach((sk, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const x = W * (0.2 + col * 0.3);
+        const y = H * (0.15 + row * (0.7 / rows));
         ctx.fillStyle = "rgba(237,233,254,0.8)";
         ctx.font = `bold ${fs}px "Inter", system-ui, sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(SKILLS[i], pos.x * W, pos.y * H);
+        ctx.fillText(sk, x, y);
       });
       return undefined;
     }
 
-    lastFire = performance.now() - FIRE_INTERVAL; // fire immediately
+    lastFire = performance.now() - FIRE_INTERVAL;
     raf.current = requestAnimationFrame(tick);
     return undefined;
   }, []);
