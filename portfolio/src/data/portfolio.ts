@@ -83,6 +83,12 @@ export const FOCUS_AREAS: FocusArea[] = [
     icon: "server",
   },
   {
+    title: "Clean Architecture & OOP",
+    description:
+      "Designing systems with strong separation of concerns, reusable logic, maintainable structure, and disciplined engineering practices.",
+    icon: "blocks",
+  },
+  {
     title: "Secure Auth & Permissions",
     description:
       "Implementing JWT-based authentication, role-based access control, and row-level security from day one.",
@@ -116,7 +122,7 @@ export interface TechGroup {
 export const TECH_STACK: TechGroup[] = [
   {
     category: "Backend",
-    items: ["Python", "Django", "Django REST Framework", "Node.js", "REST APIs", "JWT / RBAC"],
+    items: ["Python", "Django", "Django REST Framework", "C#", ".NET", "Node.js", "REST APIs", "JWT / RBAC"],
   },
   {
     category: "Frontend",
@@ -129,6 +135,10 @@ export const TECH_STACK: TechGroup[] = [
   {
     category: "DevOps",
     items: ["Git", "GitHub", "Vercel", "Docker", "Nginx", "AWS SES"],
+  },
+  {
+    category: "Engineering Foundations",
+    items: ["Object-Oriented Design", "Clean Code", "Separation of Concerns", "SOLID Principles"],
   },
   {
     category: "Data & AI",

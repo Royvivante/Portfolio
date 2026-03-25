@@ -8,6 +8,8 @@ import * as THREE from "three";
 const ORBIT_TECHS = [
   { label: "Python", ring: 0 },
   { label: "Django", ring: 0 },
+  { label: "C#", ring: 0 },
+  { label: ".NET", ring: 0 },
   { label: "PostgreSQL", ring: 0 },
   { label: "REST APIs", ring: 0 },
   { label: "JWT", ring: 0 },
