@@ -1,12 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Server, Shield, Rocket, Monitor, Lightbulb } from "lucide-react";
+import { Server, Shield, Rocket, Monitor, Lightbulb, Boxes } from "lucide-react";
 import { FOCUS_AREAS } from "@/data/portfolio";
 import { SectionHeading } from "./section-heading";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   server: Server,
+  blocks: Boxes,
   shield: Shield,
   rocket: Rocket,
   monitor: Monitor,

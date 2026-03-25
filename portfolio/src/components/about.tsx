@@ -25,8 +25,10 @@ export function About() {
           <p>
             My strongest interest is in backend engineering and system design — designing clean APIs,
             modeling databases, handling auth and permissions correctly, and thinking through the
-            architecture before writing code. That said, I also enjoy frontend work and care about
-            shipping polished, responsive interfaces.
+            architecture before writing code. I also built a strong foundation in object-oriented
+            design and clean architecture through structured development in C# and .NET, focusing on
+            separation of concerns, maintainability, and professional coding standards. That said, I
+            also enjoy frontend work and care about shipping polished, responsive interfaces.
           </p>
           <p>
             Before university, I served as a combat soldier in the IDF and worked as a computer
