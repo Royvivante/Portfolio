@@ -58,7 +58,7 @@ export function Navbar() {
           ))}
           <li>
             <a
-              href="/resume.pdf"
+              href="/Roy_Vivante_CV_final.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm px-4 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] text-foreground hover:bg-white/[0.1] hover:border-white/[0.15] transition-all duration-200"
@@ -102,7 +102,7 @@ export function Navbar() {
               ))}
               <li>
                 <a
-                  href="/resume.pdf"
+                  href="/Roy_Vivante_CV_final.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-lg px-6 py-3 rounded-lg bg-white/[0.06] border border-white/[0.08] text-foreground"
