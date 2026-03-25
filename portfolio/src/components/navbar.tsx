@@ -17,23 +17,29 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/70 backdrop-blur-2xl border-b border-accent/[0.06] shadow-[0_1px_20px_rgba(124,58,237,0.03)]"
+          ? "bg-background/80 backdrop-blur-xl border-b border-white/[0.06]"
           : "bg-transparent"
       )}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a
           href="#home"
-          className="font-mono text-sm font-medium tracking-tight text-foreground hover:text-accent transition-colors duration-300"
+          className="font-mono text-sm font-medium tracking-tight text-foreground hover:text-accent transition-colors"
         >
           roy.dev
         </a>
@@ -44,10 +50,9 @@ export function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="relative text-sm text-muted/80 hover:text-foreground transition-colors duration-300 group"
+                className="text-sm text-muted hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-accent/40 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
               </a>
             </li>
           ))}
@@ -56,7 +61,7 @@ export function Navbar() {
               href="/Roy_Vivante_CV_final.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm px-4 py-2 rounded-lg bg-accent/[0.08] border border-accent/[0.12] text-foreground hover:bg-accent/[0.14] hover:border-accent/[0.2] transition-all duration-300"
+              className="text-sm px-4 py-2 rounded-lg bg-white/[0.06] border border-white/[0.08] text-foreground hover:bg-white/[0.1] hover:border-white/[0.15] transition-all duration-200"
             >
               Resume
             </a>
@@ -81,7 +86,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-0 top-[60px] bg-background/95 backdrop-blur-2xl z-40"
+            className="md:hidden fixed inset-0 top-[60px] bg-background/95 backdrop-blur-xl z-40"
           >
             <ul className="flex flex-col items-center gap-6 pt-16">
               {NAV_LINKS.map((link) => (
@@ -100,7 +105,7 @@ export function Navbar() {
                   href="/Roy_Vivante_CV_final.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-lg px-6 py-3 rounded-lg bg-accent/[0.08] border border-accent/[0.12] text-foreground"
+                  className="text-lg px-6 py-3 rounded-lg bg-white/[0.06] border border-white/[0.08] text-foreground"
                 >
                   Resume
                 </a>

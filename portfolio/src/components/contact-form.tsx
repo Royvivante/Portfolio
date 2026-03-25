@@ -146,7 +146,7 @@ export function ContactForm() {
         disabled={state === "submitting"}
         className={cn(
           "w-full flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-medium text-white",
-          "transition-all duration-300 hover:bg-accent-light hover:shadow-[0_0_28px_rgba(124,58,237,0.25)]",
+          "transition-all duration-200 hover:bg-accent-light hover:shadow-[0_0_24px_rgba(99,102,241,0.25)]",
           "disabled:opacity-60 disabled:cursor-not-allowed"
         )}
       >
