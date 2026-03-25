@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ContactForm } from "./contact-form";
 import StackedArticleCards from "./ui/stacked-article-cards";
 import { SOCIAL_LINKS } from "@/data/portfolio";
 
@@ -39,7 +40,7 @@ export function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
-        className="mx-auto max-w-2xl"
+        className="mx-auto max-w-5xl"
       >
         <div className="text-center mb-14">
           <span className="mb-3 inline-block font-mono text-xs uppercase tracking-widest text-accent">
@@ -49,12 +50,31 @@ export function Contact() {
             Let&apos;s Connect
           </h2>
           <p className="text-base text-muted leading-relaxed">
-            Interested in working together or just want to chat? I&apos;m always open to discussing
-            new opportunities and ideas.
+            Interested in working together or just want to chat? Send me a message
+            or find me on the links below.
           </p>
         </div>
 
-        <div className="flex justify-center">
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          {/* Left — contact form */}
+          <div>
+            <h3 className="text-sm font-medium text-foreground/70 mb-4 font-mono uppercase tracking-wider">
+              Send a message
+            </h3>
+            <ContactForm />
+          </div>
+
+          {/* Right — stacked social cards */}
+          <div className="hidden md:block">
+            <h3 className="text-sm font-medium text-foreground/70 mb-4 font-mono uppercase tracking-wider">
+              Find me
+            </h3>
+            <StackedArticleCards items={STACKED_ITEMS} />
+          </div>
+        </div>
+
+        {/* Mobile: show stacked cards below form */}
+        <div className="mt-12 md:hidden flex justify-center">
           <StackedArticleCards items={STACKED_ITEMS} />
         </div>
       </motion.div>
