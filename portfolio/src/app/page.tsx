@@ -6,6 +6,7 @@ import { TechStack } from "@/components/tech-stack";
 import { About } from "@/components/about";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
+import { SectionDivider } from "@/components/section-divider";
 
 export default function Home() {
   return (
@@ -13,8 +14,10 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
+        <SectionDivider />
         <Projects />
         <Focus />
+        <SectionDivider />
         <TechStack />
         <About />
         <Contact />
