@@ -90,7 +90,7 @@ export function Projects() {
       <SectionHeading
         label="Work"
         title="Featured Projects"
-        description="Systems I've designed, built, and shipped — from medical research platforms to production e-commerce."
+        description="Systems I've designed, built, and shipped. From medical research platforms to production e-commerce."
       />
 
       <div className="mx-auto max-w-6xl grid gap-6 md:grid-cols-2">

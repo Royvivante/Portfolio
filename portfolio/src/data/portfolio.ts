@@ -40,7 +40,7 @@ export const PROJECTS: Project[] = [
     slug: "top-cipuyim",
     tagline: "Production e-commerce platform with AI content assistant and admin dashboard",
     description:
-      "A commercial website for vehicle coatings built with real business logic — Stripe payments, stock reservation, CMS with drag-and-drop page builder, and full admin panel.",
+      "A commercial website for vehicle coatings built with real business logic: Stripe payments, stock reservation, CMS with drag-and-drop page builder, and full admin panel.",
     highlights: [
       "~194 TypeScript files with strict type checking across the entire codebase",
       "Database-driven CMS with drag-and-drop page builder (9 section types)",
@@ -97,7 +97,7 @@ export const FOCUS_AREAS: FocusArea[] = [
   {
     title: "Production-Oriented Development",
     description:
-      "Building systems that are deployed, monitored, and used by real people — not just demos or side projects.",
+      "Building systems that are deployed, monitored, and used by real people, not just demos or side projects.",
     icon: "rocket",
   },
   {
@@ -109,7 +109,7 @@ export const FOCUS_AREAS: FocusArea[] = [
   {
     title: "Real-World Problem Solving",
     description:
-      "Translating business requirements into technical solutions — from stock reservation logic to email notification flows.",
+      "Translating business requirements into technical solutions, from stock reservation logic to email notification flows.",
     icon: "lightbulb",
   },
 ];
