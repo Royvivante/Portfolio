@@ -51,7 +51,7 @@ A production e-commerce platform for vehicle coatings & protection with admin da
 - **Frontend:** TypeScript 5.9 (strict), Next.js 16, React 19, Tailwind CSS, Zustand
 - **Backend:** Server Actions, PostgreSQL queries with type safety
 - **Database:** Supabase (PostgreSQL + RLS), 11 migrations
-- **Integrations:** Stripe, Anthropic Claude AI, WhatsApp
+- **Integrations:** Stripe, WhatsApp
 - **Deployment:** Vercel with CI/CD
 
 **Key Achievements:**
