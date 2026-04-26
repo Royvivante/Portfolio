@@ -67,6 +67,21 @@ export const PROJECTS: Project[] = [
     stack: ["Python", "TensorFlow", "scikit-learn", "Pandas", "NLP", "LSTM"],
     github: "https://github.com/MorSigman/btc_language_signals_project",
   },
+  {
+    title: "WinProb",
+    slug: "winprob",
+    tagline: "NBA win-probability prediction platform with ML scoring and audit trail",
+    description:
+      "An MVP sports prediction system that combines game data ingestion, feature engineering, logistic regression scoring, and grounded explanations with full prediction history.",
+    highlights: [
+      "Six-feature logistic regression model with baseline comparisons and Brier score evaluation",
+      "Append-only prediction history with structured diffing for full auditability",
+      "Async FastAPI backend with SQLAlchemy 2.x and PostgreSQL via Alembic migrations",
+      "Analyst dashboard and mobile-first consumer app for exploring predictions",
+    ],
+    stack: ["Python", "FastAPI", "PostgreSQL", "scikit-learn", "SQLAlchemy", "React", "Docker"],
+    github: "https://github.com/Royvivante/Sports",
+  },
 ];
 
 export interface FocusArea {
